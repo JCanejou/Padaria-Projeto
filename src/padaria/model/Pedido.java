@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Pedido {
+public final class Pedido {
     private final int id;
     private final LocalDateTime criadoEm;
     private final List<ItemPedido> itens = new ArrayList<>();
@@ -71,6 +71,7 @@ public class Pedido {
 
     public void adicionarItem(Produto produto, int quantidade) {
         verificarSePodeAlterar();
+        ItemPedido.validarQuantidade(quantidade);
         for (ItemPedido item : itens) {
             if (item.getProduto().getNome().equalsIgnoreCase(produto.getNome())) {
                 item.setQuantidade(item.getQuantidade() + quantidade);
@@ -83,6 +84,9 @@ public class Pedido {
     public void removerItem(int indice) {
         verificarSePodeAlterar();
         validarIndice(indice);
+        if (itens.size() == 1) {
+            throw new IllegalStateException("O pedido precisa ter pelo menos um item. Para desistir do pedido, use a opção Cancelar.");
+        }
         itens.remove(indice);
     }
 
@@ -112,7 +116,7 @@ public class Pedido {
         return formaPagamento.calcularTotal(getSubtotal());
     }
 
-    private void verificarSePodeAlterar() {
+    public void verificarSePodeAlterar() {
         if (estado != null && !estado.permiteAlteracao()) {
             throw new IllegalStateException("Pedido com status \"" + estado.getNome() + "\" não pode ser alterado.");
         }

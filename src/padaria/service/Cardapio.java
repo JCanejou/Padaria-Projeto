@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Cardapio {
+public final class Cardapio {
     private final List<Produto> produtos = new ArrayList<>();
 
     public Cardapio() {

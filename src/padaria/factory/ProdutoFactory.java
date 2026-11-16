@@ -7,7 +7,7 @@ public abstract class ProdutoFactory {
         if (nome == null || nome.isBlank()) {
             throw new IllegalArgumentException("O nome do produto é obrigatório.");
         }
-        if (preco <= 0) {
+        if (Double.isNaN(preco) || Double.isInfinite(preco) || preco <= 0) {
             throw new IllegalArgumentException("O preço deve ser maior que zero.");
         }
         return criarProduto(nome.trim(), preco);

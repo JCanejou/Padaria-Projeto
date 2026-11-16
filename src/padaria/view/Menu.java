@@ -86,7 +86,7 @@ public class Menu {
             }
             int quantidade = lerInteiro("Quantidade: ");
             try {
-                itens.add(new ItemPedido(produto, quantidade));
+                adicionarNaLista(itens, produto, quantidade);
                 System.out.println("Adicionado: " + quantidade + "x " + produto.getNome());
             } catch (IllegalArgumentException e) {
                 System.out.println("Erro: " + e.getMessage());
@@ -102,6 +102,20 @@ public class Menu {
         Pedido pedido = pedidoService.cadastrar(cliente, itens, formaPagamento);
         System.out.println("\nPedido #" + pedido.getId() + " cadastrado com sucesso!");
         imprimirDetalhes(pedido);
+    }
+
+    private void adicionarNaLista(List<ItemPedido> itens, Produto produto, int quantidade) {
+        ItemPedido.validarQuantidade(quantidade);
+        for (int i = 0; i < itens.size(); i++) {
+            ItemPedido item = itens.get(i);
+            if (item.getProduto() == produto) {
+                int total = item.getQuantidade() + quantidade;
+                ItemPedido.validarQuantidade(total);
+                itens.set(i, new ItemPedido(produto, total));
+                return;
+            }
+        }
+        itens.add(new ItemPedido(produto, quantidade));
     }
 
     private void listarPedidos() {
@@ -146,6 +160,9 @@ public class Menu {
             opcao = lerInteiro("Escolha uma opção: ");
 
             try {
+                if (opcao >= 1 && opcao <= 5) {
+                    pedido.verificarSePodeAlterar();
+                }
                 switch (opcao) {
                     case 1 -> pedido.setCliente(lerTexto("Novo nome do cliente: "));
                     case 2 -> adicionarItem(pedido);
@@ -174,9 +191,6 @@ public class Menu {
     }
 
     private void adicionarItem(Pedido pedido) {
-        if (!pedido.getEstado().permiteAlteracao()) {
-            throw new IllegalStateException("Pedido com status \"" + pedido.getEstado().getNome() + "\" não pode ser alterado.");
-        }
         mostrarCardapio();
         Produto produto = escolherProduto(lerInteiro("Número do produto: "));
         if (produto != null) {
