@@ -1,9 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Padaria" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="padaria.Main" />
-    <module name="padaria-pedidos" />
-    <method v="2">
-      <option name="Make" enabled="true" />
-    </method>
-  </configuration>
-</component>
